@@ -72,3 +72,6 @@ Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+Content/sA_BloodSplatter_System/Showroom_Assets/Blueprints/BP_Example_Spawner.uasset
+Content/sA_BloodSplatter_System/Showroom_Assets/Blueprints/BP_RAY_Spawner_22.uasset
+Content/sA_BloodSplatter_System/Showroom_Assets/Models/SM_Test_Geometry.uasset
