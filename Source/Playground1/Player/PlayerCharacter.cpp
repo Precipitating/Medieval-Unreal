@@ -31,6 +31,7 @@ APlayerCharacter::APlayerCharacter()
 	Camera->bUsePawnControlRotation = true;
 
 
+
 }
 
 // Called when the game starts or when spawned
@@ -49,7 +50,12 @@ void APlayerCharacter::BeginPlay()
 	Mesh = GetMesh();
 	KickEvent = this->FindFunction(FName("Kick"));
 
+	// Set the regen stamina timer so it regens.
 	GetWorld()->GetTimerManager().SetTimer(StaminaTimerHandle, this, &APlayerCharacter::RegenStamina, StaminaRegenDelay, true);
+
+	// Get AttackComponent reference
+	AttackComp = FindComponentByTag<UActorComponent>(FName("AttackComponent"));
+
 }
 
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -210,6 +216,15 @@ void APlayerCharacter::SetKicked(bool Value)
 	HasKicked = Value;
 }
 
+bool APlayerCharacter::IsExecuting()
+{
+	FProperty* IsExecuting = AttackComp->GetClass()->FindPropertyByName(TEXT("IsExecuting"));
+	bool bExecuting;
+	IsExecuting->GetValue_InContainer(AttackComp, &bExecuting);
+
+	return bExecuting;
+}
+
 
 #pragma endregion
 
@@ -239,7 +254,7 @@ void APlayerCharacter::Look(const FInputActionValue& InputValue)
 {
 	FVector2D InputVector = InputValue.Get<FVector2D>();
 
-	if (IsValid(Controller))
+	if (IsValid(Controller) && !IsExecuting())
 	{
 		AddControllerYawInput(InputVector.X);
 		AddControllerPitchInput(InputVector.Y);
@@ -249,7 +264,8 @@ void APlayerCharacter::Look(const FInputActionValue& InputValue)
 #pragma region Player_Actions
 void APlayerCharacter::Jump()
 {
-	if (JumpAction && ((CurrentStamina - JumpCost) > 0.f))
+
+	if (JumpAction && ((CurrentStamina - JumpCost) > 0.f) && !IsExecuting())
 	{
 		if (CanJump())
 		{
@@ -267,7 +283,8 @@ void APlayerCharacter::Jump()
 
 void APlayerCharacter::Crouch()
 {
-	if (CrouchAction && !GetJumped())
+
+	if (CrouchAction && !GetJumped() && !IsExecuting())
 	{
 		SetSprint(false);
 		if (bIsCrouched)

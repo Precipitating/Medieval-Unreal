@@ -87,6 +87,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Action GettersSetters")
 	void SetKicked(bool Value);
 
+	UFUNCTION(BlueprintCallable, Category = "Action GettersSetters")
+	bool IsExecuting();
 # pragma endregion
 
 protected:
@@ -183,6 +185,8 @@ private:
 	// Cached components
 	USkeletalMeshComponent* Mesh = nullptr;
 	UFunction* KickEvent = nullptr;
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UActorComponent* AttackComp = nullptr;
 
 
 
