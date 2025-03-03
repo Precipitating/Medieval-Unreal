@@ -53,6 +53,9 @@ void APlayerCharacter::BeginPlay()
 	// Set the regen stamina timer so it regens.
 	GetWorld()->GetTimerManager().SetTimer(StaminaTimerHandle, this, &APlayerCharacter::RegenStamina, StaminaRegenDelay, true);
 
+	// Set the posture regen timer
+	GetWorld()->GetTimerManager().SetTimer(PostureTimerHandle, this, &APlayerCharacter::RegenPosture, PostureRegenDelay, true);
+
 	// Get AttackComponent reference
 	AttackComp = FindComponentByTag<UActorComponent>(FName("AttackComponent"));
 
@@ -64,6 +67,7 @@ void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 
 	GetWorld()->GetTimerManager().ClearTimer(StaminaTimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(PostureTimerHandle);
 	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 }
 
@@ -179,6 +183,47 @@ void APlayerCharacter::RegenStamina()
 
 	// Ensure no over/undershooting of stamina
 	CurrentStamina = FMath::Clamp(CurrentStamina, 0.f, MaxStamina);
+}
+#pragma endregion
+
+#pragma region Posture_Functions
+float APlayerCharacter::GetPosture()
+{
+	return CurrentPosture;
+}
+float APlayerCharacter::GetMaxPosture()
+{
+	return MaxPosture;
+}
+void APlayerCharacter::SetPosture(float NewPosture)
+{
+	CurrentPosture = FMath::Clamp(NewPosture, 0.f, MaxPosture);
+}
+void APlayerCharacter::ReducePosture(float ReducedValue)
+{
+	CurrentPosture = FMath::Clamp(CurrentPosture - ReducedValue, 0.f, MaxPosture);
+}
+void APlayerCharacter::IncreasePosture(float IncreasedValue)
+{
+	CurrentPosture = FMath::Clamp(CurrentPosture + IncreasedValue, 0.f, MaxPosture);
+}
+void APlayerCharacter::SetPostureRecoveryValue(float Recovery)
+{
+	PostureRecoveryFactor = Recovery;
+}
+void APlayerCharacter::RegenPosture()
+{
+	const float PreviousPosture = CurrentPosture;
+
+	CurrentPosture += PostureRecoveryFactor;
+
+	if (CurrentPosture != PreviousPosture)
+	{
+		OnPostureUpdate.Broadcast(PreviousPosture, CurrentPosture, MaxPosture);
+	}
+
+	// Ensure no over/undershooting of posture
+	CurrentPosture = FMath::Clamp(CurrentPosture, 0.f, MaxPosture);
 }
 #pragma endregion
 

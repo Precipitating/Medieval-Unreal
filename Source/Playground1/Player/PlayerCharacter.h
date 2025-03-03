@@ -72,6 +72,40 @@ public:
 
 #pragma endregion
 
+
+#pragma region Posture_Functions
+
+	// Return current posture.
+	UFUNCTION(BlueprintPure, Category = "Player Posture")
+	float GetPosture();
+	UFUNCTION(BlueprintPure, Category = "Player Posture")
+	float GetMaxPosture();
+	// Set player's posture.
+	UFUNCTION(BlueprintCallable, Category = "Player Posture")
+	void SetPosture(float Posture);
+
+	// Reduce Posture
+	UFUNCTION(BlueprintCallable, Category = "Player Posture")
+	void ReducePosture(float Posture);
+
+	UFUNCTION(BlueprintCallable, Category = "Player Posture")
+	void IncreasePosture(float Posture);
+	// Set player's posture recovery amount.
+	UFUNCTION(BlueprintCallable, Category = "Player Posture")
+	void SetPostureRecoveryValue(float Recovery);
+
+	UFUNCTION(BlueprintCallable, Category = "Player Posture")
+	void RegenPosture();
+
+	// Triggered when the player's posture is updated.
+	UPROPERTY(BlueprintAssignable, Category = "Player Posture")
+	FFloatStatUpdated OnPostureUpdate;
+
+
+#pragma endregion
+
+
+
 #pragma region Action_GettersSetters
 	UFUNCTION(BlueprintPure, Category = "Action GettersSetters")
 	bool GetJumped() const;
@@ -97,13 +131,6 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	// On overlap (kick)
-	void BeginKickOverlap(UPrimitiveComponent* OverlappedComp,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
-		const FHitResult& SweepResult);
 
 #pragma region Inputs
 
@@ -140,6 +167,7 @@ protected:
 	void Jump();
 	void Crouch();
 	void Kick();
+	UFUNCTION(BlueprintCallable, Category = "Player Sprint")
 	void SetSprint(bool IsSprinting);
 
 	// Kick animation montage reference
@@ -170,7 +198,7 @@ private:
 	static float constexpr MaxStamina			 = 100.f;
 	static float constexpr CrouchRecovery		 = 10.f;
 	bool				   HasJumped			 = false;
-	float                  StaminaRegenDelay	 = 0.5f;
+	float                  StaminaRegenDelay	 = 1.f;
 	FTimerHandle		   StaminaTimerHandle;
 
 	// Action stamina cost
@@ -179,6 +207,12 @@ private:
 	static constexpr float KickCost		   = 30.f;
 	bool HasKicked = false;
 
+	// Posture
+	float				   CurrentPosture = MaxPosture;
+	float				   PostureRecoveryFactor = 3.f;
+	static float constexpr MaxPosture = 100.f;
+	float                  PostureRegenDelay = 2.f;
+	FTimerHandle		   PostureTimerHandle;
 
 
 
