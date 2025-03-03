@@ -357,29 +357,6 @@ void APlayerCharacter::Kick()
 
 }
 
-//void APlayerCharacter::BeginKickOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-//{
-//	// Make sure it's not itself.
-//	if (OtherActor && OtherActor == this) { return; }
-//
-//	// Handle kick if it overlaps a capsule component.
-//	if (HasKicked)
-//	{
-//		UFunction* RagdollBeginEvent = OtherActor->FindFunction(TEXT("RagdollBegin"));
-//		if (RagdollBeginEvent)
-//		{
-//			OtherActor->ProcessEvent(RagdollBeginEvent, nullptr);
-//		}
-//
-//
-//
-//
-//
-//	}
-//
-//
-//}
-
 void APlayerCharacter::SetSprint(bool IsSprinting)
 {
 	// Do not sprint if we have no stamina, or we are crouching.
