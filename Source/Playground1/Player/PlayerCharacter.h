@@ -123,6 +123,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Action GettersSetters")
 	bool IsExecuting();
+
+	UFUNCTION(BlueprintCallable, Category = "Action GettersSetters")
+	uint8 GetStanceEnum();
+
 # pragma endregion
 
 protected:
@@ -184,8 +188,13 @@ private:
 	class USpringArmComponent* SpringArm = nullptr;
 
 	// Speed
-	static constexpr float WalkSpeed   = 300.f;
-	static constexpr float SprintSpeed = WalkSpeed * 2.f;
+	static constexpr float DefaultWalkSpeed		= 300.f;
+	static constexpr float SwordWalkSpeed		= 200.f;
+	static constexpr float CrossbowWalkSpeed	= 150.f;
+	static constexpr float WalkSpeed			= DefaultWalkSpeed;
+	static constexpr float SprintSpeed			= WalkSpeed * 2.f;
+	static constexpr float SwordSprintSpeed		= SwordWalkSpeed * 2.f;
+	static constexpr float CrossbowSprintSpeed	= CrossbowWalkSpeed * 2.f;
 	bool IsRunning = false;
 	bool HasRan = false;
 
@@ -208,19 +217,20 @@ private:
 	bool HasKicked = false;
 
 	// Posture
-	float				   CurrentPosture = MaxPosture;
-	float				   PostureRecoveryFactor = 3.f;
-	static float constexpr MaxPosture = 100.f;
-	float                  PostureRegenDelay = 2.f;
+	float				   CurrentPosture			= MaxPosture;
+	float				   PostureRecoveryFactor	= 3.f;
+	static float constexpr MaxPosture				= 100.f;
+	float                  PostureRegenDelay		= 2.f;
 	FTimerHandle		   PostureTimerHandle;
 
 
 
 	// Cached components
-	USkeletalMeshComponent* Mesh = nullptr;
-	UFunction* KickEvent = nullptr;
+	USkeletalMeshComponent* Mesh	= nullptr;
+	UFunction* KickEvent			= nullptr;
+
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UActorComponent* AttackComp = nullptr;
+	UActorComponent* AttackComp		= nullptr;
 
 
 
