@@ -270,6 +270,33 @@ bool APlayerCharacter::IsExecuting()
 	return bExecuting;
 }
 
+uint8 APlayerCharacter::GetStanceEnum()
+{	
+	uint8 Stance;
+	FProperty* Property = GetClass()->FindPropertyByName(TEXT("Stance"));
+
+	if (Property)
+	{
+		// Cast to FByteProperty (ENums are stored as uint8)
+		FByteProperty* ByteProp = CastField<FByteProperty>(Property);
+
+		if (ByteProp)
+		{
+			// Get ENum name
+			uint8 CurrentStance = ByteProp->GetPropertyValue_InContainer(this);
+			UEnum* EnumClass = ByteProp->GetIntPropertyEnum();
+			Stance = CurrentStance;
+
+		}
+
+
+
+	}
+
+	return Stance;
+
+}
+
 
 #pragma endregion
 
@@ -288,6 +315,22 @@ void APlayerCharacter::Movement(const FInputActionValue& InputValue)
 		{
 			HasRan = true;
 		}
+
+		// Set default walking speed depending on stance
+		switch (GetStanceEnum())
+		{
+		case 0:
+			GetCharacterMovement()->MaxWalkSpeed = DefaultWalkSpeed;	break;
+		case 1:
+			GetCharacterMovement()->MaxWalkSpeed = SwordWalkSpeed;		break;
+		case 2:
+			GetCharacterMovement()->MaxWalkSpeed = CrossbowWalkSpeed;	break;
+			break;
+		default:
+			GetCharacterMovement()->MaxWalkSpeed = DefaultWalkSpeed;
+
+		}
+
 
 
 	}
@@ -367,7 +410,16 @@ void APlayerCharacter::SetSprint(bool IsSprinting)
 
 	IsRunning = IsSprinting;
 
-	GetCharacterMovement()->MaxWalkSpeed = IsRunning ? SprintSpeed : WalkSpeed;
+	switch (GetStanceEnum())
+	{
+	case 0: GetCharacterMovement()->MaxWalkSpeed = IsRunning ? SprintSpeed : WalkSpeed;					break;
+	case 1: GetCharacterMovement()->MaxWalkSpeed = IsRunning ? SwordSprintSpeed : SwordWalkSpeed;		break;
+	case 2: GetCharacterMovement()->MaxWalkSpeed = IsRunning ? CrossbowSprintSpeed : CrossbowWalkSpeed; break;
+	default:
+		GetCharacterMovement()->MaxWalkSpeed = IsRunning ? SprintSpeed : WalkSpeed;
+
+	}
+
 }
 
 
