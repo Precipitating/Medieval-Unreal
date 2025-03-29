@@ -193,7 +193,7 @@ private:
 	static constexpr float CrossbowWalkSpeed	= 150.f;
 	static constexpr float WalkSpeed			= DefaultWalkSpeed;
 	static constexpr float SprintSpeed			= WalkSpeed * 2.f;
-	static constexpr float SwordSprintSpeed		= SwordWalkSpeed * 2.f;
+	static constexpr float SwordSprintSpeed		= SprintSpeed;
 	static constexpr float CrossbowSprintSpeed	= CrossbowWalkSpeed * 2.f;
 	bool IsRunning = false;
 	bool HasRan = false;
