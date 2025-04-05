@@ -233,6 +233,14 @@ private:
 	UActorComponent* AttackComp		= nullptr;
 
 
+	// Noise events for AI
+	
+	// Emit noise every X meters
+	float NoiseEmitDistance = 500.f;
+	FVector LastNoiseLocation;
+
+
+
 
 
 

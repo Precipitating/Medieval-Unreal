@@ -4,12 +4,14 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Perception/AISense_Hearing.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
+	
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	//SetActorTickInterval(0.5f);
@@ -418,6 +420,17 @@ void APlayerCharacter::SetSprint(bool IsSprinting)
 	default:
 		GetCharacterMovement()->MaxWalkSpeed = IsRunning ? SprintSpeed : WalkSpeed;
 
+	}
+
+	if (IsRunning)
+	{
+		float Dist = FVector::Dist(GetActorLocation(), LastNoiseLocation);
+		if (Dist >= NoiseEmitDistance)
+		{
+			UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 0.5f, this);
+			LastNoiseLocation = GetActorLocation();
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Footstep Noise Emitted"));
+		}
 	}
 
 }
