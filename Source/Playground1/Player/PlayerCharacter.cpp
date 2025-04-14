@@ -31,6 +31,7 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetupAttachment(SpringArm);
 	Camera->SetWorldLocation(CameraLocation);
 	Camera->bUsePawnControlRotation = true;
+	Camera->bAutoActivate = false;
 
 
 
@@ -344,7 +345,7 @@ void APlayerCharacter::Look(const FInputActionValue& InputValue)
 {
 	FVector2D InputVector = InputValue.Get<FVector2D>();
 
-	if (IsValid(Controller) && !IsExecuting())
+	if (IsValid(Controller) && !IsExecuting() && CanMove)
 	{
 		AddControllerYawInput(InputVector.X);
 		AddControllerPitchInput(InputVector.Y);
@@ -355,7 +356,7 @@ void APlayerCharacter::Look(const FInputActionValue& InputValue)
 void APlayerCharacter::Jump()
 {
 
-	if (JumpAction && ((CurrentStamina - JumpCost) > 0.f) && !IsExecuting())
+	if (JumpAction && ((CurrentStamina - JumpCost) > 0.f) && !IsExecuting() && CanMove)
 	{
 		if (CanJump())
 		{
@@ -374,7 +375,7 @@ void APlayerCharacter::Jump()
 void APlayerCharacter::Crouch()
 {
 
-	if (CrouchAction && !GetJumped() && !IsExecuting())
+	if (CrouchAction && !GetJumped() && !IsExecuting() && CanMove)
 	{
 		SetSprint(false);
 		if (bIsCrouched)
@@ -393,7 +394,7 @@ void APlayerCharacter::Crouch()
 
 void APlayerCharacter::Kick()
 {
-	if (KickAction && (CurrentStamina - KickCost) > 0.f && !HasKicked)
+	if (KickAction && (CurrentStamina - KickCost) > 0.f && !HasKicked && CanMove)
 	{
 		CurrentStamina -= KickCost;
 		this->ProcessEvent(KickEvent, nullptr);
