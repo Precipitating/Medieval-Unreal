@@ -199,7 +199,7 @@ private:
 	bool HasRan = false;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	bool CanMove = true;
+	bool CanMove = false;
 
 	// Stamina
 	float				   CurrentStamina		 = MaxStamina;
